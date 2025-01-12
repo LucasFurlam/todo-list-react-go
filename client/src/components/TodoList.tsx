@@ -1,4 +1,5 @@
 import { Flex, Spinner, Stack, Text } from "@chakra-ui/react";
+
 import TodoItem from "./TodoItem";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "../App";
@@ -14,7 +15,7 @@ const TodoList = () => {
     queryKey: ["todos"],
     queryFn: async () => {
       try {
-        const res = await fetch(BASE_URL + "todos");
+        const res = await fetch(BASE_URL + "/todos");
         const data = await res.json();
 
         if (!res.ok) {
@@ -35,6 +36,8 @@ const TodoList = () => {
         fontWeight={"bold"}
         textAlign={"center"}
         my={2}
+        bgGradient="linear(to-l, #0b85f8, #00ffff)"
+        bgClip="text"
       >
         Today's Tasks
       </Text>

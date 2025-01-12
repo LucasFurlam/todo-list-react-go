@@ -7,6 +7,7 @@ import { BASE_URL } from "../App";
 
 const TodoItem = ({ todo }: { todo: Todo }) => {
   const queryClient = useQueryClient();
+
   const { mutate: updateTodo, isPending: isUpdating } = useMutation({
     mutationKey: ["updateTodo"],
     mutationFn: async () => {
