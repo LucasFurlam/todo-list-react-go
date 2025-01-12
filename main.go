@@ -26,9 +26,10 @@ func main() {
 	fmt.Println("hello world")
 
 	if os.Getenv("ENV") != "production" {
+		// Load the .env file if not in production
 		err := godotenv.Load(".env")
 		if err != nil {
-			log.Fatal("Error loading .env file", err)
+			log.Fatal("Error loading .env file:", err)
 		}
 	}
 
@@ -53,10 +54,10 @@ func main() {
 
 	app := fiber.New()
 
-	//app.Use(cors.New(cors.Config{
-	//	AllowOrigins: "http://localhost:5173",
-	//	AllowHeaders: "Origin,Content-Type,Accept",
-	//}))
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins: "http://localhost:5173",
+	// 	AllowHeaders: "Origin,Content-Type,Accept",
+	// }))
 
 	app.Get("/api/todos", getTodos)
 	app.Post("/api/todos", createTodo)
@@ -73,6 +74,7 @@ func main() {
 	}
 
 	log.Fatal(app.Listen("0.0.0.0:" + port))
+
 }
 
 func getTodos(c *fiber.Ctx) error {
@@ -99,6 +101,7 @@ func getTodos(c *fiber.Ctx) error {
 
 func createTodo(c *fiber.Ctx) error {
 	todo := new(Todo)
+	// {id:0,completed:false,body:""}
 
 	if err := c.BodyParser(todo); err != nil {
 		return err
@@ -120,13 +123,13 @@ func createTodo(c *fiber.Ctx) error {
 
 func updateTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
 	}
 
-	filter := bson.M{"_id": objectId}
+	filter := bson.M{"_id": objectID}
 	update := bson.M{"$set": bson.M{"completed": true}}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
@@ -135,19 +138,20 @@ func updateTodo(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(fiber.Map{"success": true})
+
 }
 
 func deleteTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
-	objectId, err := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
 	}
 
-	filter := bson.M{"_id": objectId}
-
+	filter := bson.M{"_id": objectID}
 	_, err = collection.DeleteOne(context.Background(), filter)
+
 	if err != nil {
 		return err
 	}

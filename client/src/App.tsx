@@ -8,7 +8,7 @@ export const BASE_URL =
 
 function App() {
   return (
-    <Stack h="100hv">
+    <Stack h="100vh">
       <Navbar />
       <Container>
         <TodoForm />
